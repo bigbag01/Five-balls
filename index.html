@@ -17,10 +17,17 @@
 	<img src='./img/7.png' style="display: none;"/>
 	<div id="container" style="width: 1000px">
 		<div id="box" class="main">
-		<div id="inner" class="inner"></div>
+		<div id="inner" class="inner">
+			<div id="endPanel">
+			<p class='title'>游戏结束</p>
+			<hr>
+			<p>您的得分为 <span id="score1"></span></p>
+			<button id="restart">重新开始</button>
+			</div>
+		</div>
 		</div>
 		<div id="scoreBox">
-			<p id="title">得分板</p>
+			<p id="title" class="title">得分板</p>
 			<hr>
 			<p id="score" style="color:white;font-size:20px"></p>
 		</div>

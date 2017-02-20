@@ -5,6 +5,7 @@ $(document).ready(function(){
 var Mygrid=function(){
 	this.clicks=0;
 	this.score=0;
+	this.total=0;
 	this.grid=new Array();
 	this.pre=new Array();
 	this.path=[];
@@ -37,6 +38,11 @@ Mygrid.prototype={
 		var clrs=new Array();
 		var poss=new Array();
 		var row,col;
+		if(_this.total>=79){
+			_this.showGrid();
+			_this.end();
+			return;
+		}
 		for(var i=0;i<3;i++){
 			clrs[i]=Math.floor(Math.random()*7)+1;
 		}
@@ -61,9 +67,15 @@ Mygrid.prototype={
 			poss[2]=row+""+col;
 		}while(poss[2]==poss[1]||poss[2]==poss[1]||_this.grid[row][col]!=0)
 		_this.grid[row][col]=clrs[2];
+
 		for(var i=0;i<3;i++)
 			_this.nexts[i+1]=poss[i];
+		_this.total+=3;
 		_this.showGrid();
+		if(_this.total==81){
+			_this.end();
+			return;
+		}
 	},
 	clickFunc:function(id){
 		var _this=this;
@@ -198,8 +210,6 @@ Mygrid.prototype={
 	},
 	remove:function(flag){
 		for(var next=0;next<flag;next++){
-			/*var row=Math.floor(parseInt(this.dst)/10);
-			var col=parseInt(this.dst)%10;*/
 			var row=Math.floor(parseInt(this.nexts[next])/10);
 			var col=parseInt(this.nexts[next])%10;
 			var cnt=1;
@@ -216,6 +226,7 @@ Mygrid.prototype={
 			if(cnt>=5){
 				for(var i=pl+1;i<pr;i++){
 					this.grid[row][i]=0;
+					this.total--;
 				}
 				this.score+=cnt*10;
 				return true;
@@ -232,6 +243,7 @@ Mygrid.prototype={
 			if(cnt>=5){
 				for(var i=pu+1;i<pd;i++){
 					this.grid[i][col]=0;
+					this.total--;
 				}
 				this.score+=cnt*10;
 				return true;
@@ -248,6 +260,7 @@ Mygrid.prototype={
 			if(cnt>=5){
 				for(var i=prer+1-row;i<postr-row;i++){
 					this.grid[row+i][col+i]=0;
+					this.total--;
 				}
 				this.score+=cnt*10;
 				return true;
@@ -262,21 +275,21 @@ Mygrid.prototype={
 				cnt++;postr--;postc++;
 			}
 			if(cnt>=5){
-				for(var i=prer-1-row;i>postr-row;i--)
+				for(var i=prer-1-row;i>postr-row;i--){
 					this.grid[row+i][col-i]=0;
+					this.total--;
+				}
 				this.score+=cnt*10;
 				return true;
 			}
 		}
 		return false;
-	}
-}
-function sleep(d){
-	var now=new Date();
-	var exitTime=now.getTime()+d;
-	while(1){
-		now=new Date();
-		if(now.getTime()>exitTime)
-			return;
+	},
+	end:function(){
+		$('#score1').text(this.score);
+		$('#endPanel').show();
+		$('#restart').click(function(){
+			window.location.reload();
+		});
 	}
 }
