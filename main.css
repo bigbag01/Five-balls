@@ -1,0 +1,48 @@
+html,body{
+	width:100%;
+	height: 100%;
+	background-color: #FCFFF5
+}
+#box{
+	width:558px;
+	height:558px;
+	border-radius:6px;
+	padding:30px;
+	margin:0 60px;
+	background:#193441;
+	display:inline-block;
+	float:left;
+}
+#inner{
+	width:558px;
+	height:558px;
+	margin:auto;
+}
+#scoreBox{
+	width:180px;
+	height:140px;
+	border-radius: 3px 10px;
+	text-align: center;
+	padding:25px;
+	background:#193441;
+	display: inline-block;
+	position: fixed;
+}
+#title{
+	color:white;
+	font-size:30px;
+	margin:5%;
+}
+#container{
+	padding-top:50px;
+	padding-bottom: 40px;
+	margin-left:200px;
+}
+.cell{
+	border:1px solid #D1DBBD;
+	width:60px;
+	height:60px;
+	float:left;
+	color:#d1dbbd;
+	text-align:center;
+}
