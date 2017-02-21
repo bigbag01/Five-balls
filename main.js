@@ -1,11 +1,18 @@
 $(document).ready(function(){
 	var mygrid=new Mygrid();
 	mygrid.init();
+	$('#end').click(function(){mygrid.end(mygrid);});
+	window.onbeforeunload=function(){
+		var record=Number(window.localStorage.getItem('highest'));
+		if(mygrid.highest>record)
+			window.localStorage.setItem('highest',mygrid.highest);
+	}
 });
 var Mygrid=function(){
 	this.clicks=0;
 	this.score=0;
 	this.total=0;
+	this.highest=0;
 	this.grid=new Array();
 	this.pre=new Array();
 	this.path=[];
@@ -27,14 +34,20 @@ Mygrid.prototype={
 				$('#inner').append(cell);
 			}
 		}
+		var highest=window.localStorage.getItem('highest');
+		if(highest!=null){
+			_this.highest=Number(highest);
+		}
+		
 		for(var i=0;i<3;i++){
-			this.forecolor[i]=Math.floor(Math.random()*7)+1;
+			_this.forecolor[i]=Math.floor(Math.random()*7)+1;
 		}
 		_this.generateNewBalls();
 		$('.cell').click(function(){
 			var id=$(this).attr('id');
 			_this.clickFunc(id);
 		});
+		
 	},
 	generateNewBalls:function(){
 		// 3 random colors in 7
@@ -44,12 +57,9 @@ Mygrid.prototype={
 		var row,col;
 		if(_this.total>=79){
 			_this.showGrid();
-			_this.end();
+			_this.end(_this);
 			return;
 		}
-/*		for(var i=0;i<3;i++){
-			clrs[i]=Math.floor(Math.random()*7)+1;
-		}*/
 		// 3 random positions,none overlap
 		do{
 			row=Math.floor(Math.random()*9);
@@ -80,13 +90,12 @@ Mygrid.prototype={
 		_this.total+=3;
 		_this.showGrid();
 		if(_this.total==81){
-			_this.end();
+			_this.end(_this);
 			return;
 		}
 	},
 	clickFunc:function(id){
 		var _this=this;
-		//console.log(id);
 		var row=Math.floor(id/10);
 		var col=id%10;
 		if(_this.clicks==0){
@@ -97,8 +106,7 @@ Mygrid.prototype={
 			}
 		}else{
 			_this.clicks--;
-			//if(id==_this.src) 
-				this.release(_this.src);
+			this.release(_this.src);
 			if(_this.grid[row][col]==0&&_this.checkPath(_this.src,row+""+col)){
 				_this.nexts[0]=id;
 				_this.dst=id;
@@ -131,6 +139,8 @@ Mygrid.prototype={
 					_this.generateNewBalls();
 					_this.remove(4);
 				}
+				if(_this.score>_this.highest)
+					_this.highest=_this.score;
 				_this.showGrid();
 				clearInterval(myTime);
 				return;
@@ -156,6 +166,7 @@ Mygrid.prototype={
 			}
 		}
 		$('#score').text(this.score);
+		$('#highest').text(this.highest);
 		for(var i=0;i<3;i++){
 			var id='#f'+i;
 			var val='./img/'+this.forecolor[i]+'.png';
@@ -297,9 +308,11 @@ Mygrid.prototype={
 		}
 		return false;
 	},
-	end:function(){
-		$('#score1').text(this.score);
+	end:function(e){
+		var _this=e;
+		$('#score1').text(_this.score);
 		$('#endPanel').show();
+		window.localStorage.setItem('highest',_this.highest);
 		$('#restart').click(function(){
 			window.location.reload();
 		});
