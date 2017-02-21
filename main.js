@@ -10,6 +10,7 @@ var Mygrid=function(){
 	this.pre=new Array();
 	this.path=[];
 	this.nexts=[];
+	this.forecolor=[];
 	this.src=""; //选中小球坐标
 	this.dst=""; //选中小球目标坐标
 }
@@ -26,6 +27,9 @@ Mygrid.prototype={
 				$('#inner').append(cell);
 			}
 		}
+		for(var i=0;i<3;i++){
+			this.forecolor[i]=Math.floor(Math.random()*7)+1;
+		}
 		_this.generateNewBalls();
 		$('.cell').click(function(){
 			var id=$(this).attr('id');
@@ -35,7 +39,7 @@ Mygrid.prototype={
 	generateNewBalls:function(){
 		// 3 random colors in 7
 		var _this=this;
-		var clrs=new Array();
+		//var clrs=new Array();
 		var poss=new Array();
 		var row,col;
 		if(_this.total>=79){
@@ -43,33 +47,36 @@ Mygrid.prototype={
 			_this.end();
 			return;
 		}
-		for(var i=0;i<3;i++){
+/*		for(var i=0;i<3;i++){
 			clrs[i]=Math.floor(Math.random()*7)+1;
-		}
+		}*/
 		// 3 random positions,none overlap
 		do{
 			row=Math.floor(Math.random()*9);
 			col=Math.floor(Math.random()*9);
 			poss[0]=row+""+col;
 		}while(_this.grid[row][col]!=0)
-		_this.grid[row][col]=clrs[0];
+		_this.grid[row][col]=this.forecolor[0];
 
 		do{
 			row=Math.floor(Math.random()*9);
 			col=Math.floor(Math.random()*9);
 			poss[1]=row+""+col;
 		}while(poss[1]==poss[0]||_this.grid[row][col]!=0)
-		_this.grid[row][col]=clrs[1];
+		_this.grid[row][col]=this.forecolor[1];
 
 		do{
 			row=Math.floor(Math.random()*9);
 			col=Math.floor(Math.random()*9);
 			poss[2]=row+""+col;
 		}while(poss[2]==poss[1]||poss[2]==poss[1]||_this.grid[row][col]!=0)
-		_this.grid[row][col]=clrs[2];
+		_this.grid[row][col]=this.forecolor[2];
 
 		for(var i=0;i<3;i++)
 			_this.nexts[i+1]=poss[i];
+		for(var i=0;i<3;i++){
+			this.forecolor[i]=Math.floor(Math.random()*7)+1;
+		}
 		_this.total+=3;
 		_this.showGrid();
 		if(_this.total==81){
@@ -149,6 +156,11 @@ Mygrid.prototype={
 			}
 		}
 		$('#score').text(this.score);
+		for(var i=0;i<3;i++){
+			var id='#f'+i;
+			var val='./img/'+this.forecolor[i]+'.png';
+			$(id).html("<img src="+val+" width='60'>");
+		}
 	},
 	checkPath:function(src,dst){
 		var dstrow=Math.floor(parseInt(dst)/10);
